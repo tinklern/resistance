@@ -12,12 +12,16 @@ class PlayersController < ApplicationController
     "
     PrivatePub.publish_to "/lobby/#{player.game_id}", js_res
     
-    
-    unless player.game.players.pluck( :is_ready ).include?( false )
+    game = player.game
+    unless game.players.pluck( :is_ready ).include?( false )
+      game.update_attributes!( :is_active => true );
       js_res = "
-        alert( 'all players ready game will start in 5 seconds' );
+        alert( 'all players ready, game will start in 5 seconds' );
+        setTimeout( function() {
+          window.location = '#{game_path( :id => game.id)}';
+        }, 5000 );
       "
-      PrivatePub.publish_to "/lobby/#{player.game_id}", js_res
+      PrivatePub.publish_to "/lobby/#{game.id}", js_res
     end
     
     redirect_to :back
@@ -30,7 +34,6 @@ class PlayersController < ApplicationController
     js_res = "
       $( '#player_#{player.id}_name .player_name' ).removeClass( 'hidden' ).html( '#{player.name}' );
       $( '#player_#{player.id}_name .player_name_field' ).addClass( 'hidden' ).find( 'input' ).val('').keyup();
-      
     "
     
     PrivatePub.publish_to "/lobby/#{player.game_id}", js_res

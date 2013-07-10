@@ -1,44 +1,43 @@
-.container
-  %h2= @game.name
-  %table.table.table-hover.table-striped.table-bordered.lobby_table
-    - @game.players.each do |player|
-      - is_this_player = player.auth_hash == session[:auth]
-      %tr
-        %td{ :id => "player_#{player.id}_name" }
-          %span.player_name= player.name
-          - if is_this_player
-            %span.player_name_field.hidden
-              = text_field_tag "player_#{player.id}_name_field", "", :placeholder => "Enter new name", :style => "margin-bottom:0"
-              = link_to "Change", '/players/change_name', :remote => true, :class => "btn btn-small"
-              .btn.btn-small.cancel_player_name Cancel
-        - rdy = player.is_ready?
-        %td
-          - if is_this_player
-            = link_to rdy ? "Ready" : "Not Ready", "/players/ready", :remote => true, :id => "player_#{player.id}_ready", :class => "btn btn-small ready_button #{rdy ? "btn-success" : "btn-danger"}"
-          - else
-            .label{ :id => "player_#{player.id}_ready", :class => rdy ? "label-success" : "label-important" }= rdy ? "Ready" : "Not Ready"
-          
-          
-  = subscribe_to "/lobby/#{@game.id}"
-  
-  :javascript
-    $( function() {
-      $( '.lobby_table' ).on( 'click', '.ready_button', function() {
-        if( $( '.ready_button' ).length == $( '.ready_button.btn-success' ).length ) {
-          alert( "Everyone is ready, you can't unready now" );
-          return false; 
-        }
-      });
-      
-      $( '.lobby_table' ).on( 'click', '.player_name', function() {
-        if( $( this ).next().is( '.player_name_field' ) )
-          $( this ).addClass( 'hidden' ).next().removeClass( 'hidden' ).focus();
-      });
-    
-      $( '.lobby_table' ).on( 'keyup', '.player_name_field input', function() {
-        $( this ).next().attr( 'href', '/players/change_name?player_name=' + this.value );
-      });
-      
-      /// cancel name change
+%h2= @game.name
+%table.table.table-hover.table-striped.table-bordered.lobby_table
+  - @game.players.each do |player|
+    - is_this_player = player.auth_hash == session[:auth]
+    %tr
+      %td{ :id => "player_#{player.id}_name" }
+        %span.player_name= player.name
+        - if is_this_player
+          %span.player_name_field.hidden
+            = text_field_tag "player_#{player.id}_name_field", "", :placeholder => "Enter new name", :style => "margin-bottom:0"
+            = link_to "Change", '/players/change_name', :remote => true, :class => "btn btn-small"
+            .btn.btn-small.cancel_player_name Cancel
+      - rdy = player.is_ready?
+      %td
+        - if is_this_player
+          = link_to rdy ? "Ready" : "Not Ready", "/players/ready", :remote => true, :id => "player_#{player.id}_ready", :class => "btn btn-small ready_button #{rdy ? "btn-success" : "btn-danger"}"
+        - else
+          .label{ :id => "player_#{player.id}_ready", :class => rdy ? "label-success" : "label-important" }= rdy ? "Ready" : "Not Ready"
+        
+        
+= subscribe_to "/lobby/#{@game.id}"
 
+:javascript
+  $( function() {
+    $( '.lobby_table' ).on( 'click', '.ready_button', function() {
+      if( $( '.ready_button' ).length == $( '.ready_button.btn-success' ).length ) {
+        alert( "Everyone is ready, you can't unready now" );
+        return false; 
+      }
     });
+    
+    $( '.lobby_table' ).on( 'click', '.player_name', function() {
+      if( $( this ).next().is( '.player_name_field' ) )
+        $( this ).addClass( 'hidden' ).next().removeClass( 'hidden' ).focus();
+    });
+  
+    $( '.lobby_table' ).on( 'keyup', '.player_name_field input', function() {
+      $( this ).next().attr( 'href', '/players/change_name?player_name=' + this.value );
+    });
+    
+    /// cancel name change
+
+  });

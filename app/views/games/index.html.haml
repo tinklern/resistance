@@ -1,33 +1,32 @@
-.container
-  .hero-unit
-    %h1 Welcome
-    %p.lead Create a new Game or join a current Game
-    %p
-      .create_game.btn Create
-      .join_game.btn Join
-    = form_tag "games/create", :method => :post, :class => "hidden game_form" do
-      = text_field_tag 'player_name', "", :style => "margin-bottom:0;", :placeholder => "Username"
-      %br
-      = text_field_tag 'game_name', "", :style => "margin-bottom:0;", :placeholder => "Game name"
-      = submit_tag "Go", :class => "btn btn-small"
-    
+.hero-unit
+  %h1 Welcome
+  %p.lead Create a new Game or join a current Game
+  %p
+    .create_game.btn Create
+    .join_game.btn Join
+  = form_tag "games/create", :method => :post, :class => "hidden game_form" do
+    = text_field_tag 'player_name', "", :style => "margin-bottom:0;", :placeholder => "Username", :required => "required"
+    %br
+    = text_field_tag 'game_name', "", :style => "margin-bottom:0;", :placeholder => "Game name", :required => "required"
+    = submit_tag "Go", :class => "btn btn-small"
+  
 
-  :javascript
-    $( function() {
-      $( '.create_game, .join_game' ).on( 'click', function() {
+:javascript
+  $( function() {
+    $( '.create_game, .join_game' ).on( 'click', function() {
+    
+      $( '.create_game, .join_game' ).removeClass( 'active' ).removeClass( 'btn-success' );
       
-        $( '.create_game, .join_game' ).removeClass( 'active' ).removeClass( 'btn-success' );
-        
-        var btn = $( this ).addClass( 'active' ).addClass( 'btn-success' ),
-            form = $( '.game_form' ).removeClass( 'hidden' );
-        
-        if( btn.hasClass( 'create_game' ) ) {
-          form.attr( 'action', 'games/create' );
-        } else {
-          form.attr( 'action', 'games/join' );
-        }
-        
-      });
+      var btn = $( this ).addClass( 'active' ).addClass( 'btn-success' ),
+          form = $( '.game_form' ).removeClass( 'hidden' );
+      
+      if( btn.hasClass( 'create_game' ) ) {
+        form.attr( 'action', 'games/create' );
+      } else {
+        form.attr( 'action', 'games/join' );
+      }
+      
     });
-  
-  
+  });
+
+

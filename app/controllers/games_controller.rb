@@ -14,6 +14,7 @@ class GamesController < ApplicationController
   def join
     game = Game.find_by_name( params[:game_name] )
     raise "No game found by the name of '#{params[:game_name]}'" if game.nil?
+    raise "This game is already in session" if game.is_active?
     session[:auth] = SecureRandom.uuid
     player = Player.create!( :game => game, :name => params[:player_name] || "Player #{game.players.count + 1}", :auth_hash => session[:auth] )
     
@@ -29,5 +30,9 @@ class GamesController < ApplicationController
     raise "You don't belong here!" unless params[:id].present? && session[:auth].present?
     @game = Game.find( params[:id] )
     @player = Player.find_by_auth_hash( session[:auth] )
+  end
+  
+  def game
+    @game = Game.find( params[:id] )
   end
 end
