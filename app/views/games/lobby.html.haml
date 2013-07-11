@@ -4,7 +4,11 @@
     - is_this_player = player.auth_hash == session[:auth]
     %tr
       %td{ :id => "player_#{player.id}_name" }
-        %span.player_name= player.name
+        %span.player_name
+          - if is_this_player
+            %strong= player.name
+          - else
+            = player.name
         - if is_this_player
           %span.player_name_field.hidden
             = text_field_tag "player_#{player.id}_name_field", "", :placeholder => "Enter new name", :style => "margin-bottom:0"

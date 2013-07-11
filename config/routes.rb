@@ -11,7 +11,6 @@ Resistance::Application.routes.draw do
   get 'lobby/:id' => 'games#lobby'
   get 'games/:id' => 'games#game', :as => "game"
   
-  
   get 'players/ready' => 'players#ready'
   get 'players/change_name' => 'players#change_name'
 

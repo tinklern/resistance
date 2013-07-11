@@ -5,12 +5,11 @@
     .create_game.btn Create
     .join_game.btn Join
   = form_tag "games/create", :method => :post, :class => "hidden game_form" do
-    = text_field_tag 'player_name', "", :style => "margin-bottom:0;", :placeholder => "Username", :required => "required"
-    %br
     = text_field_tag 'game_name', "", :style => "margin-bottom:0;", :placeholder => "Game name", :required => "required"
     = submit_tag "Go", :class => "btn btn-small"
+    %br
+    = text_field_tag 'player_name', "", :style => "margin-bottom:0;", :placeholder => "Username"
   
-
 :javascript
   $( function() {
     $( '.create_game, .join_game' ).on( 'click', function() {

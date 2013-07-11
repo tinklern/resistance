@@ -2,11 +2,13 @@
 
 %h4 Players
 %ul.player_list
-  - @game.players.each do |player|
+  - @players.each do |player|
     - is_this_player = player.auth_hash == session[:auth]
     %li.player_item
       - if is_this_player
         %strong= player.name
       - else
         = player.name
+      = player.loyalty
+
       

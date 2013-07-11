@@ -34,5 +34,16 @@ class GamesController < ApplicationController
   
   def game
     @game = Game.find( params[:id] )
+    
+    unless @game.is_active?
+      redirect_to :action => "lobby", :id => @game.id
+    end
+    
+    # game.current_vote
+    # current_vote.leader = player.first
+    
+    @players = @game.players.order("id")
+    
+    raise "You aren't in this game!" unless @players.pluck( :auth_hash ).include? session[:auth]
   end
 end

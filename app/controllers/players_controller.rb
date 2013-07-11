@@ -13,8 +13,22 @@ class PlayersController < ApplicationController
     PrivatePub.publish_to "/lobby/#{player.game_id}", js_res
     
     game = player.game
-    unless game.players.pluck( :is_ready ).include?( false )
+    players = game.players
+    unless players.size <= 1 || players.pluck( :is_ready ).include?( false )
+      
+      # setup loyalties
       game.update_attributes!( :is_active => true );
+
+      spies = players.sample( Game::SPY_NUMBERS[players.size.to_s] )
+
+      spies.each do |spy|
+        spy.update_attributes!( :loyalty => 1 )
+      end
+    
+      players.each do |player|
+        player.update_attributes!( :loyalty => 0 ) unless spies.include? player
+      end
+      
       js_res = "
         alert( 'all players ready, game will start in 5 seconds' );
         setTimeout( function() {
