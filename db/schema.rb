@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130707225226) do
+ActiveRecord::Schema.define(version: 20130712203822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(version: 20130707225226) do
     t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "neg_score",        default: 0
+    t.integer  "pos_score",        default: 0
+    t.integer  "current_round_id"
   end
 
   create_table "players", force: true do |t|
@@ -31,6 +34,18 @@ ActiveRecord::Schema.define(version: 20130707225226) do
     t.datetime "updated_at"
     t.string   "auth_hash"
     t.boolean  "is_ready",   default: false
+  end
+
+  create_table "rounds", force: true do |t|
+    t.integer  "leader_id"
+    t.text     "team_ids"
+    t.integer  "yes_votes"
+    t.integer  "no_votes"
+    t.integer  "pass_votes"
+    t.integer  "fail_votes"
+    t.integer  "game_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

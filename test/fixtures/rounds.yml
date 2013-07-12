@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  leader_id: 
+  team_ids: MyText
+  yes_votes: 
+  no_votes: 
+  pass_votes: 
+  fail_votes: 
+  game_id: 
+
+two:
+  leader_id: 
+  team_ids: MyText
+  yes_votes: 
+  no_votes: 
+  pass_votes: 
+  fail_votes: 
+  game_id: 

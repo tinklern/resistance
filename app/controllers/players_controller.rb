@@ -54,4 +54,29 @@ class PlayersController < ApplicationController
     
     redirect_to :back
   end
+  
+  def toggle_team
+    player = Player.find( params[:id] )
+    game = player.game
+    
+    raise "You're doing it wrong" if game.nil? || game.current_round_id.nil?
+    
+    round = game.current_round
+    
+    if round.team_ids.include? player.id
+      round.team_ids.delete( player.id )
+      js_res = "
+        $( '#player_#{player.id}_in_round' ).html( '' );
+      "
+    else
+      round.team_ids.insert( 0, player.id )
+      js_res = "
+        $( '#player_#{player.id}_in_round' ).html( '&#9996;' );
+      "
+    end
+    
+    round.save!
+    
+    PrivatePub.publish_to "/game/#{player.game_id}", js_res
+  end
 end

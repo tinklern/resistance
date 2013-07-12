@@ -13,6 +13,7 @@ Resistance::Application.routes.draw do
   
   get 'players/ready' => 'players#ready'
   get 'players/change_name' => 'players#change_name'
+  get 'players/toggle_team/:id' => 'players#toggle_team', :as => "add_to_team"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

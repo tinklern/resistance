@@ -1,6 +1,7 @@
 class Game < ActiveRecord::Base
   has_many :players, :dependent => :destroy
-  # has_many :votes
+  has_many :rounds, :dependent => :destroy
+  belongs_to :current_round, :class_name => "Round", :foreign_key => :current_round_id
   
   attr_accessor :leader
   

@@ -4,11 +4,20 @@
 %ul.player_list
   - @players.each do |player|
     - is_this_player = player.auth_hash == session[:auth]
-    %li.player_item
+    %li.player_item{ :class => player.loyalty == 0 ? "" : "spy" }
+      - if @round.leader == player
+        &#9733;
       - if is_this_player
         %strong= player.name
       - else
         = player.name
-      = player.loyalty
+      %span{ :id => "player_#{player.id}_in_round" }
+        - if @round.team_ids.include? player.id
+          &#9996;
+      - if @round.leader == current_player
+        = link_to "Add to Team", add_to_team_path( :id => player.id ), :remote => true
+          
+= subscribe_to "/game/#{@game.id}"
+  
 
       

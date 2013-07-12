@@ -7,7 +7,7 @@ class GamesController < ApplicationController
   def create
     game = Game.create!( :name => params[:game_name] )
     session[:auth] = SecureRandom.uuid
-    player = Player.create!( :game => game, :name => params[:player_name] || "Player 1", :auth_hash => session[:auth] )
+    player = Player.create!( :game => game, :name => params[:player_name].present? ? params[:player_name] : "Player1", :auth_hash => session[:auth] )
     redirect_to :action => "lobby", :id => game.id
   end
   
@@ -16,7 +16,7 @@ class GamesController < ApplicationController
     raise "No game found by the name of '#{params[:game_name]}'" if game.nil?
     raise "This game is already in session" if game.is_active?
     session[:auth] = SecureRandom.uuid
-    player = Player.create!( :game => game, :name => params[:player_name] || "Player #{game.players.count + 1}", :auth_hash => session[:auth] )
+    player = Player.create!( :game => game, :name => params[:player_name].present? ? params[:player_name] : "Player#{game.players.count + 1}", :auth_hash => session[:auth] )
     
     js_res = "
       $( '.lobby_table' ).append( '<tr><td>#{player.name}</td><td><div id=\"player_#{player.id}_ready\" class=\"label label-important\">Not Ready</div></td></tr>' );
@@ -39,10 +39,13 @@ class GamesController < ApplicationController
       redirect_to :action => "lobby", :id => @game.id
     end
     
-    # game.current_vote
-    # current_vote.leader = player.first
+    if @game.current_round_id.blank?
+      @game.current_round = Round.create( :leader => @game.players.first, :game => @game )  
+      @game.save!
+    end
     
     @players = @game.players.order("id")
+    @round = @game.current_round
     
     raise "You aren't in this game!" unless @players.pluck( :auth_hash ).include? session[:auth]
   end
