@@ -34,17 +34,17 @@ class GamesController < ApplicationController
   
   def game
     @game = Game.find( params[:id] )
+    @players = @game.players.order("id")
     
     unless @game.is_active?
       redirect_to :action => "lobby", :id => @game.id
     end
     
     if @game.current_round_id.blank?
-      @game.current_round = Round.create( :leader => @game.players.first, :game => @game )  
+      @game.current_round = Round.create( :leader => @players.first, :game => @game )  
       @game.save!
     end
     
-    @players = @game.players.order("id")
     @round = @game.current_round
     
     raise "You aren't in this game!" unless @players.pluck( :auth_hash ).include? session[:auth]

@@ -1,6 +1,12 @@
-%h2= @game.name
+%h3= "#{@game.name}: round #{@game.round_num}"
+- if current_player.id == @round.leader_id
+  %p 
+    You are the leader. Choose 
+    %strong #{@game.team_num} 
+    players to be in your team.
+- else
+  %p #{@round.leader.name} is the leader.
 
-%h4 Players
 %ul.player_list
   - @players.each do |player|
     - is_this_player = player.auth_hash == session[:auth]
@@ -15,9 +21,10 @@
         - if @round.team_ids.include? player.id
           &#9996;
       - if @round.leader == current_player
-        = link_to "Add to Team", add_to_team_path( :id => player.id ), :remote => true
+        = link_to "Add to Team", add_to_team_path( :id => player.id ), :remote => true, :class => "add_team_link"
           
 = subscribe_to "/game/#{@game.id}"
+= subscribe_to "/game/player/#{current_player.id}"
   
 
       

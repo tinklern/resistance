@@ -62,21 +62,23 @@ class PlayersController < ApplicationController
     raise "You're doing it wrong" if game.nil? || game.current_round_id.nil?
     
     round = game.current_round
+    channel = "/game/#{game.id}"
     
     if round.team_ids.include? player.id
       round.team_ids.delete( player.id )
-      js_res = "
-        $( '#player_#{player.id}_in_round' ).html( '' );
-      "
+      js_res = "$( '#player_#{player.id}_in_round' ).html( '' );"
     else
-      round.team_ids.insert( 0, player.id )
-      js_res = "
-        $( '#player_#{player.id}_in_round' ).html( '&#9996;' );
-      "
+      if round.team_num < game.team_num
+        round.team_ids.insert( 0, player.id )
+        js_res = "$( '#player_#{player.id}_in_round' ).html( '&#9996;' );"
+      else
+        js_res = "alert('You already have the full team size.');"
+        channel = "/game/player/#{current_player.id}"
+      end
     end
     
     round.save!
     
-    PrivatePub.publish_to "/game/#{player.game_id}", js_res
+    PrivatePub.publish_to channel, js_res
   end
 end

@@ -33,4 +33,13 @@ class Game < ActiveRecord::Base
     "9" => [3, 4, 4, -5, 5],
     "10" => [3, 4, 4, -5, 5]
   }  
+  
+  
+  def round_num
+    neg_score + pos_score + 1
+  end
+  
+  def team_num
+    MISSION_COUNT[players.count.to_s][round_num - 1].abs
+  end
 end

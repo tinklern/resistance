@@ -9,7 +9,7 @@ class Round < ActiveRecord::Base
     Player.where( :id => team_ids )
   end
   
-  def num_members
+  def team_num
     team_ids.count
   end
 end
