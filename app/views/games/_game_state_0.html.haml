@@ -1,0 +1,26 @@
+- if current_player.id == @round.leader_id
+  %p 
+    You are the leader. Choose 
+    %strong #{@game.team_num} 
+    players to be in your team.
+- else
+  %p #{@round.leader.name} is the leader.
+
+%ul.player_list
+  - @players.each do |player|
+    - is_this_player = player.auth_hash == session[:auth]
+    %li.player_item{ :class => player.loyalty == 0 ? "" : "spy" }
+      - if @round.leader == player
+        &#9733;
+      - if is_this_player
+        %strong= player.name
+      - else
+        = player.name
+      %span{ :id => "player_#{player.id}_in_round" }
+        - if @round.team_ids.include? player.id
+          &#9996;
+      - if @round.leader == current_player
+        = link_to "Add to Team", add_to_team_path( :id => player.id ), :remote => true, :class => "add_team_link"
+
+- if @round.leader == current_player
+  = link_to "Go to Vote", submit_team_path( :id => @game.id ), :remote => true, :class => "submit_team_link #{@round.team_num == @game.team_num ? "" : "hidden" }"

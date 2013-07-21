@@ -64,8 +64,12 @@ class GamesController < ApplicationController
   end
   
   def submit_team
-    # change state
-    # redirect to game
+    game = Game.find( params[:id] )
+    game.update_attributes!( :state => Game::States::TEAM_VOTE )
+    
+    PrivatePub.publish_to "/game/#{game.id}", "location.reload();"
+    
+    render :text => "done"
   end
   
   def submit_team_vote
