@@ -34,6 +34,13 @@ class Game < ActiveRecord::Base
     "10" => [3, 4, 4, -5, 5]
   }  
   
+  module States
+    LEADER       = 0
+    TEAM_VOTE    = 1
+    MISSION_VOTE = 2
+    ENDED        = 4
+  end
+  
   
   def round_num
     neg_score + pos_score + 1

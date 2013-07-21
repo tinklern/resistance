@@ -14,7 +14,13 @@ class GamesController < ApplicationController
   def join
     game = Game.find_by_name( params[:game_name] )
     raise "No game found by the name of '#{params[:game_name]}'" if game.nil?
-    raise "This game is already in session" if game.is_active?
+    
+    if game.is_active? && current_player.try( :game_id ) != game.id
+      raise "This game is already in session" 
+    elsif current_player.try( :game_id ) == game.id
+      redirect_to :action => "game", :id => game.id
+      return
+    end
     session[:auth] = SecureRandom.uuid
     player = Player.create!( :game => game, :name => params[:player_name].present? ? params[:player_name] : "Player#{game.players.count + 1}", :auth_hash => session[:auth] )
     
@@ -38,15 +44,40 @@ class GamesController < ApplicationController
     
     unless @game.is_active?
       redirect_to :action => "lobby", :id => @game.id
+      return
     end
     
-    if @game.current_round_id.blank?
-      @game.current_round = Round.create( :leader => @players.first, :game => @game )  
-      @game.save!
+    raise "You aren't in this game!" unless @players.pluck( :auth_hash ).include? session[:auth]
+    
+    case @game.state
+    when Game::States::LEADER
+      if @game.current_round_id.blank?
+        @game.current_round = Round.create( :leader => @players.first, :game => @game )  
+        @game.save!
+      end
+    when Game::States::TEAM_VOTE
+    when Game::States::MISSION_VOTE
+    when Game::States::ENDED
     end
     
     @round = @game.current_round
-    
-    raise "You aren't in this game!" unless @players.pluck( :auth_hash ).include? session[:auth]
+  end
+  
+  def submit_team
+    # change state
+    # redirect to game
+  end
+  
+  def submit_team_vote
+    # tally votes
+    # change state
+    # js to game in the template
+  end
+  
+  def submit_mission_vote
+    # tally votes
+    # change statate
+    # new round?
+    # js to game in the template
   end
 end

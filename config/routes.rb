@@ -10,6 +10,7 @@ Resistance::Application.routes.draw do
   post 'games/join'    => 'games#join'
   get 'lobby/:id' => 'games#lobby'
   get 'games/:id' => 'games#game', :as => "game"
+  get 'games/submit_team/:id' => 'games#submit_team', :as => "submit_team"
   
   get 'players/ready' => 'players#ready'
   get 'players/change_name' => 'players#change_name'

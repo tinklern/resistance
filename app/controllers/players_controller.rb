@@ -64,21 +64,29 @@ class PlayersController < ApplicationController
     round = game.current_round
     channel = "/game/#{game.id}"
     
-    if round.team_ids.include? player.id
+    if round.team_ids.include? player.id # remove
       round.team_ids.delete( player.id )
       js_res = "$( '#player_#{player.id}_in_round' ).html( '' );"
     else
-      if round.team_num < game.team_num
+      if round.team_num < game.team_num # add
         round.team_ids.insert( 0, player.id )
         js_res = "$( '#player_#{player.id}_in_round' ).html( '&#9996;' );"
-      else
+      else # full, can't add
         js_res = "alert('You already have the full team size.');"
         channel = "/game/player/#{current_player.id}"
       end
     end
     
+    if round.team_num == game.team_num
+      js_res += "$( '.submit_team_link' ).removeClass( 'hidden' );"
+    else
+      js_res += "$( '.submit_team_link' ).addClass( 'hidden' );"
+    end  
+  
     round.save!
     
     PrivatePub.publish_to channel, js_res
+    
+    render :text => "done"
   end
 end

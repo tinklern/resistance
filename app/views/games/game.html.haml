@@ -1,4 +1,4 @@
-%h3= "#{@game.name}: round #{@game.round_num}"
+%h3= "#{@game.name}: round #{@game.round_num} state: #{@game.state}"
 - if current_player.id == @round.leader_id
   %p 
     You are the leader. Choose 
@@ -22,6 +22,9 @@
           &#9996;
       - if @round.leader == current_player
         = link_to "Add to Team", add_to_team_path( :id => player.id ), :remote => true, :class => "add_team_link"
+
+- if @round.leader == current_player
+  = link_to "Go to Vote", submit_team_path( :id => current_player.id ), :remote => true, :class => "submit_team_link #{@round.team_num == @game.team_num ? "" : "hidden" }"
           
 = subscribe_to "/game/#{@game.id}"
 = subscribe_to "/game/player/#{current_player.id}"
