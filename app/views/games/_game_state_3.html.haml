@@ -1,0 +1,14 @@
+%h4 
+  Game Over:
+  - if @game.pos_score > @game.neg_score
+    GOOD GUYS WIN
+  - else
+    SPIES WIN
+%ul.player_list
+  - @players.each do |player|
+    - is_this_player = player.auth_hash == session[:auth]
+    %li.player_item{ :class => player.loyalty == 0 ? "" : "spy" }
+      - if is_this_player
+        %strong= player.name
+      - else
+        = player.name

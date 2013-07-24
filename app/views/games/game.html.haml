@@ -1,6 +1,17 @@
 %h3= "#{@game.name}: round #{@game.round_num} state: #{@game.state}"
 
+%h5 
+  Score: 
+  %span.good_score= @game.pos_score
+  \/
+  %span.bad_score= @game.neg_score
+
 = render :partial => "game_state_#{@game.state}"
+
+- if current_player.loyalty == 0
+  You're a GOOD GUY
+- else
+  You're a SPY
           
 = subscribe_to "/game/#{@game.id}"
 = subscribe_to "/game/player/#{current_player.id}"

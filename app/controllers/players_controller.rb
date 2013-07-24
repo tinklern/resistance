@@ -29,13 +29,7 @@ class PlayersController < ApplicationController
         player.update_attributes!( :loyalty => 0 ) unless spies.include? player
       end
       
-      js_res = "
-        alert( 'all players ready, game will start in 5 seconds' );
-        setTimeout( function() {
-          window.location = '#{game_path( :id => game.id)}';
-        }, 5000 );
-      "
-      PrivatePub.publish_to "/lobby/#{game.id}", js_res
+      PrivatePub.publish_to "/lobby/#{game.id}", "window.location = '#{game_path( :id => game.id)}';"
     end
     
     redirect_to :back

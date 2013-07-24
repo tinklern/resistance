@@ -23,7 +23,7 @@ class Game < ActiveRecord::Base
   
   MISSION_COUNT = {
     "2" => [2, 2, 2, 2, 2],
-    "3" => [2, 2, 2, 2, 2],
+    "3" => [2, 2, 2, -2, 2],
     "4" => [2, 2, 2, -3, 3],
     
     "5" => [2, 3, 2, 3, 3],
@@ -38,7 +38,7 @@ class Game < ActiveRecord::Base
     LEADER       = 0
     TEAM_VOTE    = 1
     MISSION_VOTE = 2
-    ENDED        = 4
+    ENDED        = 3
   end
   
   
@@ -48,5 +48,13 @@ class Game < ActiveRecord::Base
   
   def team_num
     MISSION_COUNT[players.count.to_s][round_num - 1].abs
+  end
+  
+  def double_fail_round?
+    MISSION_COUNT[players.count.to_s][round_num - 1] < 0
+  end
+  
+  def is_over?
+    return neg_score >= 3 || pos_score >= 3 
   end
 end

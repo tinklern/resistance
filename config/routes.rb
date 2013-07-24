@@ -11,6 +11,8 @@ Resistance::Application.routes.draw do
   get 'lobby/:id' => 'games#lobby'
   get 'games/:id' => 'games#game', :as => "game"
   get 'games/submit_team/:id' => 'games#submit_team', :as => "submit_team"
+  get 'games/submit_team_vote/:id/:vote' => 'games#submit_team_vote', :as => "submit_team_vote"
+  get 'games/submit_mission_vote/:id/:vote' => 'games#submit_mission_vote', :as => "submit_mission_vote"
   
   get 'players/ready' => 'players#ready'
   get 'players/change_name' => 'players#change_name'

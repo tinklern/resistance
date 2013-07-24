@@ -1,4 +1,9 @@
-%h4 Team Vote
+%h4 Mission Vote
+
+- if @game.double_fail_round?
+  %h5 Need 2 fails to fails
+- else
+  %h5 Need 1 fail to fail
 
 %ul.player_list
   - @team_players.each do |player|
@@ -10,7 +15,7 @@
         %strong= player.name
       - else
         = player.name
-
+        
 %h5 Not in vote
 %ul.player_list
   - @players.reject{ |p| @team_players.include? p }.each do |player|
@@ -25,12 +30,11 @@
         
 .vote_count
   Votes:
-  %span.total_votes= @round.total_team_votes 
+  %span.total_votes= @round.total_mission_votes 
   \/
-  = @players.count
+  = @team_players.count
   
-- unless @round.who_voted.include? current_player.id
+- if !@round.who_voted.include?( current_player.id ) && @team_players.include?( current_player )
   .vote_options
-    = link_to "Yes", submit_team_vote_path( :id => @game.id, :vote => "yes" ), :remote => true, :class => "submit_team_vote_link btn"
-    = link_to "No", submit_team_vote_path( :id => @game.id, :vote => "no" ), :remote => true, :class => "submit_team_vote_link btn btn-inverse"
-  
+    = link_to "Pass", submit_mission_vote_path( :id => @game.id, :vote => "pass" ), :remote => true, :class => "submit_mission_vote_link btn btn-primary"
+    = link_to "Fail", submit_mission_vote_path( :id => @game.id, :vote => "fail" ), :remote => true, :class => "submit_mission_vote_link btn btn-danger"
